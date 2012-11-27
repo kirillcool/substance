@@ -1919,19 +1919,23 @@ public class SubstanceTableUI extends BasicTableUI implements
 			// or hidden, we will get a mouseExited() event, but shouldn't
 			// be changing the rollover indication if the mouse is still
 			// over the table
-			Point mouseLoc = MouseInfo.getPointerInfo().getLocation();
 			Window windowAncestor = SwingUtilities.getWindowAncestor(table);
-			SwingUtilities.convertPointFromScreen(mouseLoc, windowAncestor);
-			Component deepest = SwingUtilities.getDeepestComponentAt(
-					windowAncestor, mouseLoc.x, mouseLoc.y);
-
-			while (deepest != null) {
-				if (deepest == table) {
-					// still in table
-					return;
-				}
-				deepest = deepest.getParent();
-			}
+            // sometimes the window ancestor may be null, like when the table is a table cell renderer itself
+            // in those cases, assume the mouse exit is a total table exit
+            if (windowAncestor != null) {
+                Point mouseLoc = MouseInfo.getPointerInfo().getLocation();
+                SwingUtilities.convertPointFromScreen(mouseLoc, windowAncestor);
+                Component deepest = SwingUtilities.getDeepestComponentAt(
+                        windowAncestor, mouseLoc.x, mouseLoc.y);
+    
+                while (deepest != null) {
+                    if (deepest == table) {
+                        // still in table
+                        return;
+                    }
+                    deepest = deepest.getParent();
+                }
+            }
 
 			fadeOutAllRollovers();
 			this.fadeOutTableHeader();
