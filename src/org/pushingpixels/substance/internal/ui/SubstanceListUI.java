@@ -132,7 +132,9 @@ public class SubstanceListUI extends BasicListUI implements
 				@Override
 				public void run() {
 					handleListSelectionChange(e);
-					list.repaint();
+                    if (list != null) {
+					    list.repaint();
+                    }
 				}
 			});
 		}
